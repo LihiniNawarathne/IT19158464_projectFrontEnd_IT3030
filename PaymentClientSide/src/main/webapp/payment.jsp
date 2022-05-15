@@ -17,21 +17,28 @@
 	
 	<!-- Linking the js files -->
 	<script src="Components/jquery-3.2.1.min.js"></script>
-	<script src="Components/concept.js"></script>
+	<script src="Components/payment.js"></script>
 
 </head>
 <body>
 
-	<% DBConnection userConn = new DBConnection(); %>
-		
+	<% DBConnection userConn = new DBConnection(); %>	
 	<div class="container">
 	<div class="row">
 	<div class="col-12">
 		<h1 align="center">Payment Management</h1>
+		<br>
+		<br>
+		<center>
 		
+	<div class="container">
+	<div class="row">
+	<div class="col-12">	
 		<!--------------------- Start of form  ------------------------------->
 		<form id="formCon" name="formCon">
-			<input id="userID" name="userID" type="text" class="form-control form-control-sm" placeholder="userID">
+		<center><h3>Make a payment</h3></center>
+		
+			<input id="userID" name="userID" type="text" class="form-control form-control-sm" placeholder="Insert User ID">
 			<br> 
 		
 			<input id="billID" name="billID" type="text" class="form-control form-control-sm" placeholder="billID">
@@ -45,26 +52,34 @@
 			
 			<input id="card_no" name="card_no" type="text" class="form-control form-control-sm" placeholder="card_no">
 			<br> 
-            
+           
 			<input id="btnSave" name="btnSave" type="button" value="Add Payment" class="btn btn-primary">
-            <input type="hidden" id="hidConIDSave" name="hidConIDSave" value="">
+            <input type="hidden" id="hidpaymentIDSave" name="hidpaymentIDSave" value="">
 		</form>
 		<!--------------------- End of form  ------------------------------->
 		
+				
 		<br>
 		<!--------------------- Alerts  ------------------------------->
 		<div id="alertSuccess" class="alert alert-success"></div>
 		<div id="alertError" class="alert alert-danger"></div>
 		<br>
+		</center>
+		
 		
 		<!--------------------- Display payments  ------------------------------->
-		<div id="divItemsGrid" class="checknull'">
+		<center>
+		<div id="divItemsGrid" >
 		<%
-			String userID = (String) request.getParameter("userID");
+			
 			PaymentResources paymentObj = new PaymentResources();
-			out.print(paymentObj.readOneUserPayment("C0002"));
+			out.print(paymentObj.readPayment());
 		%>
 		</div>
+		</center>
+
+		<br>
+		<br>
 
 	</div>
 	</div> 

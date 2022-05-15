@@ -15,7 +15,7 @@ public class DBConnection {
 			con= DriverManager.getConnection("jdbc:mysql://localhost:3306/electrogrid","root", "root1234");
 					
 			//Testing the connection
-			System.out.print("Successfully connected");
+			System.out.println("Successfully connected");
 		}
 		catch(Exception e)
 		{

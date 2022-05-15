@@ -5,7 +5,14 @@ $(document).ready(function()
 	}
 	
 	$("#alertError").hide();
+	
+	/*if($("#userID1").text().trim() == ""){
+		$("#divItemsGrid").hide();
+	}*/
 });
+
+
+	
 	
 //SAVE ============================================
 $(document).on("click", "#btnSave", function(event)
@@ -17,7 +24,7 @@ $(document).on("click", "#btnSave", function(event)
 	$("#alertError").hide();
 		
 	// Form validation-------------------
-	var status = validateConceptForm();
+	var status = validatePaymentForm();
 	if (status != true){
 		$("#alertError").text(status);
 		$("#alertError").show();
@@ -25,22 +32,20 @@ $(document).on("click", "#btnSave", function(event)
 	}
 		
 	// If valid------------------------
-	var type = ($("#hidConIDSave").val() == "") ? "POST" : "PUT";
+	var type = ($("#hidpaymentIDSave").val() == "") ? "POST" : "PUT";
 	$.ajax(
 	{
-		url : "ConsumptionAPI",
+		url : "paymentAPI",
 		type : type,
 		data : $("#formCon").serialize(),
 		dataType : "text",
 		complete : function(response, status){
-			onConceptSaveComplete(response.responseText, status);
+			PaymentSaveComplete(response.responseText, status);
 		}
 		});
 });
 
-
-
-function onConsumptionSaveComplete(response, status)
+function PaymentDetailsComplete(response, status)
 {
 	if (status == "success")
 	{
@@ -65,7 +70,37 @@ function onConsumptionSaveComplete(response, status)
 			$("#alertError").text("Unknown error while saving..");
 			$("#alertError").show();
 	}
-		$("#hidConIDSave").val("");
+		$("#hidpaymentIDSave").val("");
+		$("#formCon")[0].reset();
+}
+
+
+function PaymentSaveComplete(response, status)
+{
+	if (status == "success")
+	{
+		var resultSet = JSON.parse(response);
+		
+		if (resultSet.status.trim() == "success")
+		{
+			$("#alertSuccess").text("Successfully saved.");
+			$("#alertSuccess").show();
+			$("#divItemsGrid").html(resultSet.data);
+		} else if (resultSet.status.trim() == "error")
+		{
+			$("#alertError").text(resultSet.data);
+			$("#alertError").show();
+		}
+		} else if (status == "error")
+		{
+			$("#alertError").text("Error while saving.");
+			$("#alertError").show();
+		} else
+		{
+			$("#alertError").text("Unknown error while saving..");
+			$("#alertError").show();
+	}
+		$("#hidpaymentIDSave").val("");
 		$("#formCon")[0].reset();
 }
 
@@ -74,11 +109,14 @@ function onConsumptionSaveComplete(response, status)
 //UPDATE==========================================
 $(document).on("click", ".btnUpdate", function(event)
 {
-	$("#hidConIDSave").val($(this).data("conceptcode"));
-	$("#userID").val($(this).closest("tr").find('td:eq(1)').text());
-	$("#month").val($(this).closest("tr").find('td:eq(2)').text());
-	$("#premonreading").val($(this).closest("tr").find('td:eq(3)').text());
-	$("#curmonreading").val($(this).closest("tr").find('td:eq(4)').text());
+	$("#hidpaymentIDSave").val($(this).data("userid"));
+	$("#userID").val($(this).closest("tr").find('td:eq(1)').text()); 
+	$("#billID").val($(this).closest("tr").find('td:eq(2)').text()); 
+ 	$("#paid_amount").val($(this).closest("tr").find('td:eq(4)').text()); 
+ 	$("#payment_type").val($(this).closest("tr").find('td:eq(7)').text());
+ 	$("#card_no").val($(this).closest("tr").find('td:eq(8)').text()); 
+
+
 });
 
 
@@ -87,19 +125,21 @@ $(document).on("click", ".btnRemove", function(event)
 		{
 			$.ajax(
 			{
-				url : "ConsumptionAPI",
+				url : "paymentAPI",
 				type : "DELETE",
-				data : "conID=" + $(this).data("conID"),
+				data : "billID=" + $(this).data("userid"),
 				dataType : "text",
 				complete : function(response, status)
 				{
-					onItemDeleteComplete(response.responseText, status);
+					onpaymentDeleteComplete(response.responseText, status);
 				}
 			});
 });
 
 
-function onItemDeleteComplete(response, status)
+
+
+function onpaymentDeleteComplete(response, status)
 {
 	if (status == "success")
 	{
@@ -127,37 +167,47 @@ function onItemDeleteComplete(response, status)
 
 
 //========== VALIDATION ================================================
-function validateConsumptionForm()
+function validatePaymentForm()
 {
-		// Month
-		if ($("#month").val().trim() == "")
+	
+		if ($("#userID").val().trim() == "")
 		{
-			return "Insert Month!!";
+			return "Insert User ID";
 		}
 		
-		// Previous Month Reading
-		if ($("#premonreading").val().trim() == "")
+		
+		if ($("#billID").val().trim() == "")
 		{
-			return "Insert Previous Month Reading!!";
+			return "Insert Bill ID.";
 		}
 		
-		// Current Month Reading
-		if ($("#curmonreading").val().trim() == "")
+		
+		if ($("#paid_amount").val().trim() == "")
 		{
-			return "Insert Current Month Reading!!";
+			return "Insert Paid Amount.";
+		}
+	
+		if ($("#payment_type").val().trim() == "")
+		{
+			return "Insert Payment Type.";
+		}
+		
+		if ($("#card_no").val().trim() == "")
+		{
+			return "Insert Card Number.";
 		}
 		
 		// is numerical value
-		var premonreading = $("#premonreading").val().trim();
-		if (!$.isNumeric(premonreading))
+		var amount = $("#paid_amount").val().trim();
+		if (!$.isNumeric(amount))
 		{
-			return "Invalid Previous Month Reading (Please enter a number)";
+			return "Please enter a valid amount.";
 		}
 		
-		var curmonreading = $("#curmonreading").val().trim();
-		if (!$.isNumeric(curmonreading))
+		var billid = $("#billID").val().trim();
+		if (!$.isNumeric(billid))
 		{
-			return "Invalid Current Month Reading (Please enter a number)";
+			return "Please enter a valid Bill ID.";
 		}
 		
 		return true;

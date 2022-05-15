@@ -6,10 +6,12 @@
 #btnSave {
     width: 50%;
     margin-left: 25%;
+    margin: auto;  
 }
 
 
 #btnView {
     width: 50%;
     margin-left: 25%;
+    margin: auto;  
 }

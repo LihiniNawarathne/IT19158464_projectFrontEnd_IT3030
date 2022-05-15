@@ -21,7 +21,8 @@ public class PaymentResources {
 							return "Error while connecting to the database for reading."; 	
 						}
 						// Prepare the table to display payment details
-						outPut = "<table border='1'><tr><th>Payment ID</th><th>User ID</th>" +
+						outPut ="<center><h3>Payment Details</h3><center>"+ 
+								"<table border='1'><tr><th>Payment ID</th><th>User ID</th>" +
 						"<th>Bill ID</th>" +
 						"<th>Toatl Amount</th>" +
 						"<th>Paid Amount</th>" +
@@ -65,15 +66,14 @@ public class PaymentResources {
 							outPut += "<td>" + paid_Date + "</td>";
 						
 							// button for backing a concept
-							outPut += "<td><input name='btnUpdate' " 
-							 + " type='button' value='Update'></td>"
-							 + "<td><form method='post' action=''>"
-							 + "<input name='btnRemove' " 
-							 + " type='submit' value='Delete'>"
-							 + "<input name='paymentID' type='hidden' " 
-							 + " value='" + paymentID + "'>" + "</form></td></tr>"; 
-							 } 
-
+							outPut += "<td><input name='btnUpdate' type='button' value='Update' "
+									+ "class='btnUpdate btn btn-secondary' data-userid='" + paymentID + "'></td>"
+									+ "<td><input name='btnRemove' id ='btnRemove' type='button' value='Remove' "
+									+ "class='btnRemove btn btn-danger' data-userid='" + billID + "'></td></tr>";
+							
+						} 
+						 
+								 
 						con.close();
 						
 						// Complete the html table
@@ -109,7 +109,8 @@ public class PaymentResources {
 						//check whether the given user id exists on database
 						if(!rs1.next()) {
 							// Displaying the read concepts
-							outPut = "<table border='1'><tr><th>Payment ID</th>" +
+							outPut = "<center><h3>Payment Details</h3><center>"+
+									"<table border='1'><tr><th>Payment ID</th>" +
 									"<th>Bill ID</th>" +
 									"<th>Toatl Amount</th>" +
 									"<th>Paid Amount</th>" +
@@ -153,13 +154,10 @@ public class PaymentResources {
 								outPut += "<td>" + paid_Date + "</td>";
 							
 								// button for backing a concept
-								 outPut += "<td><input name='btnUpdate' " 
-								 + " type='button' value='Update'></td>"
-								 + "<td><form method='post' action=''>"
-								 + "<input name='btnRemove' " 
-								 + " type='submit' value='Delete'>"
-								 + "<input name='userID' type='hidden' " 
-								 + " value='" + userID + "'>" + "</form></td></tr>"; 
+								outPut += "<td><input name='btnUpdate' type='button' value='Update' "
+										+ "class='btnUpdate btn btn-secondary' data-itemid='" + billID + "'></td>"
+										+ "<td><input name='btnRemove' type='button' value='Remove' "
+										+ "class='btnRemove btn btn-danger' data-itemid='" + billID + "'></td></tr>";
 								 } 
 	
 							con.close();
@@ -176,7 +174,7 @@ public class PaymentResources {
 						}
 						catch (Exception e)
 						{
-							outPut ="Error while retrieving payment details!!";
+							outPut ="<center>Error while retrieving payment details!!</center>";
 							System.out.println(e.getMessage());
 						}
 						return outPut;
@@ -186,9 +184,8 @@ public class PaymentResources {
 		
 		//Insert new payment details to the table
 		public String insertPayment(String userID,String billID,  String p_amount,String payment_type,String card_no){
-			
 			String outPut = "";		
-			
+			System.out.println("NEWWWWWWWWWWWWWWWWWWW :"+userID);
 			//check whether the input fields are empty or not
 			if(userID.isEmpty() && billID.isEmpty() && p_amount.isEmpty()  && payment_type.isEmpty() && card_no.isEmpty()) {
 			
@@ -204,11 +201,12 @@ public class PaymentResources {
 						if (con == null){
 							return "Error while connecting to the database for inserting."; 	
 						}
-						
+						System.out.println("Before Converted billID "+billID);
+						System.out.println("Class billID "+billID.getClass());
 						//convert to relevant data type
-						double paid_amount= Double.parseDouble(p_amount);
 						int bill_ID = Integer.parseInt(billID);
-						
+						System.out.println("Converted billID "+bill_ID);
+						double paid_amount= Double.parseDouble(p_amount);
 						
 						// create a prepared statement
 						String query = " insert into payment(paymentID,userID,billID,total_amount,paid_amount,balance,month,payment_type,card_no,paid_Date) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?)";						
@@ -276,12 +274,13 @@ public class PaymentResources {
 						preparedStmt.execute();
 						
 						con.close();
-						outPut = "Payment Inserted successfully"; 
-						//Successful message when inserting payment
+						String newPayment = readPayment(); 
+						outPut = "{\"status\":\"success\", \"data\": \"" +newPayment + "\"}"; 
+						 //Successful message when inserting payment
 						
 						
 					}catch (Exception e){
-						outPut = "Error while inserting the Payment to the table.";
+						outPut = "{\"status\":\"error\", \"data\":\"Error while inserting the Payment.\"}";
 						System.err.println(e.getMessage());
 					}
 						
@@ -291,12 +290,11 @@ public class PaymentResources {
 		
 		
 		//Update payment details
-		public String updatePayment(String payID,String billID,String month,String payment_type,String card_no,String total_amount,String new_paid,String new_balance,String paid_Date) {
-			
-			
+		public String updatePayment(String payID,String billID,String new_paid,String payment_type,String card_no) {
+	
 			
 			//check whether the input fields are empty or not
-			if(payID.isEmpty() && billID.isEmpty() && month.isEmpty()  && payment_type.isEmpty() && card_no.isEmpty() && total_amount.isEmpty()&& new_paid.isEmpty()&& new_balance.isEmpty()&& paid_Date.isEmpty())
+			if(payID.isEmpty() && billID.isEmpty()   && payment_type.isEmpty() && card_no.isEmpty() && new_paid.isEmpty())
 				return "Fields cannot be empty";
 			
 			
@@ -305,8 +303,6 @@ public class PaymentResources {
 				int paymentID = Integer.parseInt(payID);
 				int bID = Integer.parseInt(billID);
 				double paid_amount =Double.parseDouble(new_paid) ;
-				double balance = Double.parseDouble(new_balance) ;
-				double tot_amount = Double.parseDouble(total_amount) ;
 				
 				
 				try{
@@ -332,7 +328,7 @@ public class PaymentResources {
 						if(rs2.next()) {//There is a record can be found in the billing table for the given bill ID
 						
 							// create a update statement
-							String query ="Update payment set paid_amount='"+paid_amount+"',month='"+month+"',balance='"+balance+"',paid_Date='"+ paid_Date+"',payment_type='"+payment_type+"',total_amount='"+ tot_amount+"',billID='"+ bID 
+							String query ="Update payment set paid_amount='"+paid_amount+"',payment_type='"+payment_type+"',billID='"+ bID 
 									+"',card_no='"+ card_no+"'"+"where paymentID='"+paymentID+"'";
 					
 							//create statement
@@ -340,7 +336,10 @@ public class PaymentResources {
 							st.executeUpdate(query);
 						
 							con.close();
-							outPut = "Payment updated successfully";
+							//outPut = "Payment updated successfully";
+							
+							String newItems = readPayment(); 
+							outPut = "{\"status\":\"success\", \"data\": \"" +newItems + "\"}"; 
 						}
 						else {
 							outPut = "Entered bill ID is not available.";
@@ -365,6 +364,7 @@ public class PaymentResources {
 			//Delete payment by payment id
 			public String deletepayment(String billID){
 				String outPut = "";
+				System.out.println("Hiii "+billID);
 				int bill_ID = Integer.parseInt(billID);
 				
 				try{
@@ -389,16 +389,19 @@ public class PaymentResources {
 							String query = "DELETE FROM payment WHERE billID='"+bill_ID+"'";
 							Statement preparedStmt = con.createStatement();
 							
-							// execute the statement
+							//execute the statement
 							preparedStmt.execute(query);
 			
 							con.close();
 							outPut = "Payment records of Bill ID "+ bill_ID +" Deleted successfully";
+							
+							String newItems = readPayment(); 
+							outPut = "{\"status\":\"success\", \"data\": \"" +newItems + "\"}"; 
 							//Successful message when deleting payment row
 						}
 						else
-							outPut = "Bill payment records cannot be deleted since it has a balance.";
-						
+							//outPut = "Bill payment records cannot be deleted since it has a balance.";
+							outPut= "{\"status\":\"error\", \"data\":\"Error while deleting the item. Since the record has ongoing balance\"}";
 					}
 					
 					else
