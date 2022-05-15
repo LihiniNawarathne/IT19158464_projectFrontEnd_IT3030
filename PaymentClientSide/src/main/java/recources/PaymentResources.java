@@ -185,7 +185,7 @@ public class PaymentResources {
 		//Insert new payment details to the table
 		public String insertPayment(String userID,String billID,  String p_amount,String payment_type,String card_no){
 			String outPut = "";		
-			System.out.println("NEWWWWWWWWWWWWWWWWWWW :"+userID);
+
 			//check whether the input fields are empty or not
 			if(userID.isEmpty() && billID.isEmpty() && p_amount.isEmpty()  && payment_type.isEmpty() && card_no.isEmpty()) {
 			
@@ -313,7 +313,7 @@ public class PaymentResources {
 					}
 					
 					//get payment id from payment table
-					String q2 = "SELECT paymentID from payment where paymentID = '"+ paymentID +"'";
+					String q2 = "SELECT paymentID,total_amount from payment where paymentID = '"+ paymentID +"'";
 					Statement stmt = con.createStatement();
 					ResultSet rs = stmt.executeQuery(q2);
 		
@@ -321,14 +321,17 @@ public class PaymentResources {
 					if(rs.next()) {//There is a record can be found in the payment table for the given payment ID
 
 						//get billid of bill
-						String q3 = "SELECT bill_ID from billing where bill_ID = '"+ bID +"'";
+						String q3 = "SELECT * from billing where bill_ID = '"+ bID +"'";
 						Statement stmt2 = con.createStatement();
 						ResultSet rs2 = stmt2.executeQuery(q3);
 						
 						if(rs2.next()) {//There is a record can be found in the billing table for the given bill ID
 						
+							String total_amount =rs2.getString(9);
+							double balance  = paid_amount - Double.parseDouble(total_amount);
+							
 							// create a update statement
-							String query ="Update payment set paid_amount='"+paid_amount+"',payment_type='"+payment_type+"',billID='"+ bID 
+							String query ="Update payment set paid_amount='"+paid_amount+"',payment_type='"+payment_type+"',balance='"+balance+"',billID='"+ bID 
 									+"',card_no='"+ card_no+"'"+"where paymentID='"+paymentID+"'";
 					
 							//create statement

@@ -29,7 +29,7 @@
 		<h1 align="center">Payment Management</h1>
 		<br>
 		<br>
-		<center>
+		
 		
 	<div class="container">
 	<div class="row">
@@ -37,23 +37,26 @@
 		<!--------------------- Start of form  ------------------------------->
 		<form id="formCon" name="formCon">
 		<center><h3>Make a payment</h3></center>
-		
-			<input id="userID" name="userID" type="text" class="form-control form-control-sm" placeholder="Insert User ID">
+			Enter User ID :
+			<input id="userID" name="userID" type="text" class="form-control form-control-sm" placeholder="User ID">
 			<br> 
-		
-			<input id="billID" name="billID" type="text" class="form-control form-control-sm" placeholder="billID">
+			Enter Bill ID :
+			<input id="billID" name="billID" type="text" class="form-control form-control-sm" placeholder="Bill ID">
 			<br> 
-            
-            <input id="paid_amount" name="paid_amount" type="text" class="form-control form-control-sm" placeholder="paid_amount">
+            Enter Amount :
+            <input id="paid_amount" name="paid_amount" type="text" class="form-control form-control-sm" placeholder="Amount">
 			<br> 
-			
-			<input id="payment_type" name="payment_type" type="text" class="form-control form-control-sm" placeholder="payment_type">
+			Enter payment Type :
+			<input id="payment_type" name="payment_type" type="text" class="form-control form-control-sm" placeholder="Payment type">
 			<br> 
-			
-			<input id="card_no" name="card_no" type="text" class="form-control form-control-sm" placeholder="card_no">
+			Enter Card Number :
+			<input id="card_no" name="card_no" type="text" class="form-control form-control-sm" placeholder="card no">
 			<br> 
            
+           
+           <div class="vertical-center">
 			<input id="btnSave" name="btnSave" type="button" value="Add Payment" class="btn btn-primary">
+			</div>
             <input type="hidden" id="hidpaymentIDSave" name="hidpaymentIDSave" value="">
 		</form>
 		<!--------------------- End of form  ------------------------------->
@@ -64,11 +67,11 @@
 		<div id="alertSuccess" class="alert alert-success"></div>
 		<div id="alertError" class="alert alert-danger"></div>
 		<br>
-		</center>
+		
 		
 		
 		<!--------------------- Display payments  ------------------------------->
-		<center>
+		
 		<div id="divItemsGrid" >
 		<%
 			
@@ -76,7 +79,7 @@
 			out.print(paymentObj.readPayment());
 		%>
 		</div>
-		</center>
+	
 
 		<br>
 		<br>
