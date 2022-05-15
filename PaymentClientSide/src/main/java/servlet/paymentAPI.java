@@ -30,9 +30,7 @@ public class paymentAPI extends HttpServlet {
      */
     public paymentAPI() {
         super();
-        // TODO Auto-generated constructor stub
-        
-        
+        // TODO Auto-generated constructor stub 
     }
 
  

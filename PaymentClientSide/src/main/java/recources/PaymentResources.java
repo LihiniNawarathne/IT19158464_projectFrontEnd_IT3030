@@ -408,10 +408,10 @@ public class PaymentResources {
 					}
 					
 					else
-						outPut ="Entered bill doesnot have any payment details";
+						outPut =outPut= "{\"status\":\"error\", \"data\":\"Error while deleting the item. Since the record has ongoing balance\"}\n Entered bill doesnot have any payment details";
 					
 				}catch (Exception e){
-					outPut = "Error while deleting the payment record.";
+					outPut= "{\"status\":\"error\", \"data\":\"Error while deleting the item. Since the record has ongoing balance\"}";
 					System.out.println(e.getMessage());
 				}
 				
