@@ -80,106 +80,15 @@ public class PaymentResources {
 						outPut += "</table>";
 						
 					}catch (Exception e){
-						outPut = "Error while reading the items.";
+						//outPut = "Error while reading the items.";
+						outPut= "{\"status\":\"error\", \"data\":\"Error while deleting the payment.}";
 						System.err.println(e.getMessage());	
 					}
 					return outPut;
 					
 				}
 				
-				//read one specific user's payment details
-				public String readOneUserPayment(String user_ID)
-				{
-					String outPut = "";
-					try
-					{
-						Connection con = dbConnect.connect();
-						if (con == null)
-						{
-							return "Error while connecting to the database for reading.";
-						}
-						System.out.println("userId = "+user_ID);
-						
-						//get month and amount of bill
-						String q1 = "SELECT name from electrogrid.users where userID = '"+ user_ID +"'";
-						Statement stmt2 = con.createStatement();
-						ResultSet rs1 = stmt2.executeQuery(q1);
-						rs1.next();
-						System.out.println("No user details for"+rs1.getString(1));
-						//check whether the given user id exists on database
-						if(!rs1.next()) {
-							// Displaying the read concepts
-							outPut = "<center><h3>Payment Details</h3><center>"+
-									"<table border='1'><tr><th>Payment ID</th>" +
-									"<th>Bill ID</th>" +
-									"<th>Toatl Amount</th>" +
-									"<th>Paid Amount</th>" +
-									"<th>Balance</th>" +
-									"<th>Month</th>" +
-									"<th>Payment Type</th>" +
-									"<th>Card no.</th>" +
-									"<th>Paid Date</th>" +
-									"<th>Update</th><th>Delete</th></tr>";
-							
-							// Retrieving the concepts launched by a particular researcher
-							String query ="SELECT * from payment where userID = '"+ user_ID+"'";
-							Statement createStmt = con.createStatement();
-							
-							ResultSet rs = createStmt.executeQuery(query);
-							
-							// iterate through the rows in the result set
-							while (rs.next())
-							{
-								String payment_ID = Integer.toString(rs.getInt("paymentID"));
-								String userID = rs.getString("userID");
-								String billID = rs.getString("billID");
-								String total_amount = Double.toString(rs.getDouble("total_amount"));
-								String paid_amount = Double.toString(rs.getDouble("paid_amount"));
-								String balance = Double.toString(rs.getDouble("balance"));
-								String month =rs.getString("month");
-								String payment_type =rs.getString("payment_type");
-								String card_no =rs.getString("card_no");
-								String paid_Date =rs.getString("paid_Date");
-								
-								
-								// Add into the html table
-								outPut += "<tr><td>" + payment_ID + "</td>";
-								outPut += "<td>" + billID + "</td>";
-								outPut += "<td>" + total_amount + "</td>";
-								outPut += "<td>" + paid_amount + "</td>";
-								outPut += "<td>" + balance + "</td>";
-								outPut += "<td>" + month + "</td>";
-								outPut += "<td>" + payment_type + "</td>";
-								outPut += "<td>" + card_no + "</td>";
-								outPut += "<td>" + paid_Date + "</td>";
-							
-								// button for backing a concept
-								outPut += "<td><input name='btnUpdate' type='button' value='Update' "
-										+ "class='btnUpdate btn btn-secondary' data-itemid='" + billID + "'></td>"
-										+ "<td><input name='btnRemove' type='button' value='Remove' "
-										+ "class='btnRemove btn btn-danger' data-itemid='" + billID + "'></td></tr>";
-								 } 
-	
-							con.close();
-							
-							// Complete the html table
-							outPut += "</table>";
-						}
-							
-						else {
-							System.out.println("No user details for"+rs1.getString(1));
-							return outPut ="The user does not exist in the database";
-							
-						}
-						}
-						catch (Exception e)
-						{
-							outPut ="<center>Error while retrieving payment details!!</center>";
-							System.out.println(e.getMessage());
-						}
-						return outPut;
-				}
-		
+				
 		
 		
 		//Insert new payment details to the table
@@ -345,17 +254,20 @@ public class PaymentResources {
 							outPut = "{\"status\":\"success\", \"data\": \"" +newItems + "\"}"; 
 						}
 						else {
-							outPut = "Entered bill ID is not available.";
+							outPut = "{\"status\":\"error\", \"data\":\"Error while updating the Payment. Since the Entered bill ID is not available }";
+							//outPut = "Entered bill ID is not available.";
 						}
 						
 					}
 					else {
-						outPut = "Entered Payment ID is not available.";
+						//outPut = "Entered Payment ID is not available.";
+						outPut = "{\"status\":\"error\", \"data\":\"Error while updating the Payment. Since the Entered Payment ID is not available }";
 					}
 					
 				
 				}catch (Exception e){
-					outPut = "Error while updating the payment.";
+					outPut = "{\"status\":\"error\", \"data\":\"Error while updating the Payment.}";
+					//outPut = "Error while updating the payment.";
 					System.err.println(e.getMessage());
 				}
 				
@@ -408,10 +320,10 @@ public class PaymentResources {
 					}
 					
 					else
-						outPut =outPut= "{\"status\":\"error\", \"data\":\"Error while deleting the item. Since the record has ongoing balance\"}\n Entered bill doesnot have any payment details";
+						outPut =outPut= "{\"status\":\"error\", \"data\":\"Error while deleting the payment. Since the record has ongoing balance\"}\n Entered bill doesnot have any payment details";
 					
 				}catch (Exception e){
-					outPut= "{\"status\":\"error\", \"data\":\"Error while deleting the item. Since the record has ongoing balance\"}";
+					outPut= "{\"status\":\"error\", \"data\":\"Error while deleting the payment. Since the record has ongoing balance\"}";
 					System.out.println(e.getMessage());
 				}
 				
